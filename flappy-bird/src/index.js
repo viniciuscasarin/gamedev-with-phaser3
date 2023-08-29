@@ -28,5 +28,6 @@ let bird = null
 
 function create () {
   this.add.image(0, 0, 'sky').setOrigin(0, 0);
-  bird = this.add.sprite(config.width * 0.1, config.height / 2, 'bird').setOrigin(0, 0);
+  bird = this.physics.add.sprite(config.width * 0.1, config.height / 2, 'bird').setOrigin(0, 0);
+  bird.body.gravity.y = 200
 }
