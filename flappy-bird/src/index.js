@@ -36,11 +36,14 @@ function create () {
 
 function update (time, delta) {
 
-  if (totalDelta >= 1000) {
-    console.log(bird.body.velocity.y)
-    totalDelta = 0
-  }
-
   totalDelta += delta
+
+  if (totalDelta < 1000) return
+  
+  console.log(bird.body.velocity.y)
+  totalDelta = 0
+  
+
+  
   
 }
