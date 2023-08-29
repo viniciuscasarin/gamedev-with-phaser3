@@ -26,6 +26,7 @@ function preload () {
 }
 
 let bird = null
+let totalDelta = null
 
 function create () {
   this.add.image(0, 0, 'sky').setOrigin(0, 0);
@@ -33,6 +34,13 @@ function create () {
   bird.body.velocity.y = 200
 }
 
-function update () {
+function update (time, delta) {
+
+  if (totalDelta >= 1000) {
+    console.log(bird.body.velocity.y)
+    totalDelta = 0
+  }
+
+  totalDelta += delta
   
 }
