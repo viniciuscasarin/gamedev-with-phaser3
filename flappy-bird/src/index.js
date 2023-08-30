@@ -1,6 +1,9 @@
 
 import Phaser from "phaser";
 
+const VELOCITY = 400
+const FLAP_VELOCITY = 250
+
 const config = {
   type: Phaser.AUTO,
   width: 800,
@@ -8,7 +11,7 @@ const config = {
   physics: {
     default: 'arcade',
     arcade: {
-      gravity: { y: 200 }
+      gravity: { y: VELOCITY }
     }
   },
   scene: {
@@ -26,23 +29,17 @@ function preload () {
 }
 
 let bird = null
-const VELOCITY = 200
 
 function create () {
   this.add.image(0, 0, 'sky').setOrigin(0, 0);
   bird = this.physics.add.sprite(config.width * 0.1, config.height / 2, 'bird').setOrigin(0, 0);
-  bird.body.velocity.x = VELOCITY
+
+  this.input.on('pointerdown', flap)
+  this.input.keyboard.on('keydown_SPACE', flap)
 }
 
-function update (time, delta) {
+function update (time, delta) { }
 
-
-  if (bird.x >= config.width - bird.width) {
-    bird.body.velocity.x = -VELOCITY
-  } else if (bird.x <= 0) {
-    bird.body.velocity.x = VELOCITY
-  }
-
-  
-  
+function flap () {
+  bird.body.velocity.y = -FLAP_VELOCITY
 }
