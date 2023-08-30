@@ -26,23 +26,22 @@ function preload () {
 }
 
 let bird = null
-let totalDelta = null
+const VELOCITY = 200
 
 function create () {
   this.add.image(0, 0, 'sky').setOrigin(0, 0);
   bird = this.physics.add.sprite(config.width * 0.1, config.height / 2, 'bird').setOrigin(0, 0);
-  bird.body.velocity.y = 200
+  bird.body.velocity.x = VELOCITY
 }
 
 function update (time, delta) {
 
-  totalDelta += delta
 
-  if (totalDelta < 1000) return
-  
-  console.log(bird.body.velocity.y)
-  totalDelta = 0
-  
+  if (bird.x >= config.width - bird.width) {
+    bird.body.velocity.x = -VELOCITY
+  } else if (bird.x <= 0) {
+    bird.body.velocity.x = VELOCITY
+  }
 
   
   
