@@ -19,6 +19,10 @@ const VELOCITY = 400
 const FLAP_VELOCITY = 250
 const INITIAL_BIRD_X = config.width * 0.1
 const INITIAL_BIRD_Y = config.height / 2
+const PIPE_Y_DELTA = {
+  MIN: 100,
+  MAX: 250
+}
 
 new Phaser.Game(config);
 
@@ -31,6 +35,7 @@ function preload () {
 let bird = null
 let upperPipe = null
 let lowerPipe = null
+const pipeVerticalDistance = Phaser.Math.Between(PIPE_Y_DELTA.MIN, PIPE_Y_DELTA.MAX)
 
 function create () {
   this.add.image(0, 0, 'sky').setOrigin(0, 0);
@@ -39,7 +44,7 @@ function create () {
   bird.body.gravity.y = VELOCITY;
 
   upperPipe = this.physics.add.sprite(500, 100, 'pipe').setOrigin(0, 1);
-  lowerPipe = this.physics.add.sprite(500, upperPipe.y + 100, 'pipe').setOrigin(0, 0);
+  lowerPipe = this.physics.add.sprite(500, upperPipe.y + pipeVerticalDistance, 'pipe').setOrigin(0, 0);
 
   this.input.on('pointerdown', flap)
   this.input.keyboard.on('keydown_SPACE', flap)
