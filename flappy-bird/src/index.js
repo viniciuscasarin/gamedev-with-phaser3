@@ -3,8 +3,8 @@ import Phaser from "phaser";
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: window.innerWidth,
+  height: window.innerHeight,
   physics: {
     default: 'arcade',
   },
@@ -37,13 +37,16 @@ function preload () {
 }
 
 let bird = null
+let sky = null
 let upperPipe = null
 let lowerPipe = null
 const pipeVerticalDistance = Phaser.Math.Between(PIPE_Y_DELTA.MIN, PIPE_Y_DELTA.MAX)
 const pipeVerticalPosition = Phaser.Math.Between(PIPE_Y_POSITION.MIN, PIPE_Y_POSITION.MAX - pipeVerticalDistance)
 
 function create () {
-  this.add.image(0, 0, 'sky').setOrigin(0, 0);
+  sky = this.add.image(0, 0, 'sky').setOrigin(0, 0);
+  sky.displayWidth = config.width;
+  sky.displayHeight = config.height;
   
   bird = this.physics.add.sprite(INITIAL_BIRD_X, INITIAL_BIRD_Y, 'bird').setOrigin(0, 0);
   bird.body.gravity.y = VELOCITY;
