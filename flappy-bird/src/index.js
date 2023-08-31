@@ -20,7 +20,7 @@ const FLAP_VELOCITY = 250
 const PIPE_VELOCITY = -200
 const INITIAL_BIRD_X = config.width * 0.1
 const INITIAL_BIRD_Y = config.height / 2
-const PIPES_TO_RENDER = 400
+const PIPES_TO_RENDER = 10
 const INITIAL_PIPE_X = config.width * 0.5
 const PIPE_X_DELTA = {
   MIN: 200,
@@ -74,6 +74,8 @@ function update (time, delta) {
   if (bird.y >= config.height || bird.y <= 0) {
     restartBirdPosition()
   }
+
+  recyclePipes()
 }
 
 function restartBirdPosition () {
@@ -86,14 +88,36 @@ function flap () {
   bird.body.velocity.y = -FLAP_VELOCITY
 }
 
-function placePipe (upperPipe, lowerPipe) { 
-  currentPipeHorizontalDistance += Phaser.Math.Between(PIPE_X_DELTA.MIN, PIPE_X_DELTA.MAX)
+function placePipe (upperPipe, lowerPipe) {
   const pipeVerticalDistance = Phaser.Math.Between(PIPE_Y_DELTA.MIN, PIPE_Y_DELTA.MAX)
   const pipeVerticalPosition = Phaser.Math.Between(PIPE_Y_POSITION.MIN, PIPE_Y_POSITION.MAX - pipeVerticalDistance)
-  
-  upperPipe.x = currentPipeHorizontalDistance
+  const pipeHorizontalDistance = Phaser.Math.Between(PIPE_X_DELTA.MIN, PIPE_X_DELTA.MAX)
+  const pipeHorizontalPosition = getNextPipePosition() + pipeHorizontalDistance
+
+  upperPipe.x = pipeHorizontalPosition
   upperPipe.y = pipeVerticalPosition
 
   lowerPipe.x = upperPipe.x
   lowerPipe.y = upperPipe.y + pipeVerticalDistance
+}
+
+function getNextPipePosition () {
+  let lastPipeX = 0
+  pipeGroup.getChildren().forEach(pipe => {
+    lastPipeX = Math.max(pipe.x, lastPipeX)
+  })
+
+  return lastPipeX
+}
+
+function recyclePipes () {
+  const tempPipes = []
+  pipeGroup.getChildren().forEach(pipe => {
+    if(pipe.getBounds().right <= 0) {
+      tempPipes.push(pipe)
+      if (tempPipes.length === 2) {
+        placePipe(...tempPipes)
+      }
+    }
+  })
 }
