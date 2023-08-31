@@ -21,7 +21,7 @@ const PIPE_VELOCITY = -200
 const INITIAL_BIRD_X = config.width * 0.1
 const INITIAL_BIRD_Y = config.height / 2
 const PIPES_TO_RENDER = 400
-const INITIAL_PIPE_X = 4
+const INITIAL_PIPE_X = config.width * 0.5
 const PIPE_X_DELTA = {
   MIN: 200,
   MAX: 250
