@@ -15,13 +15,20 @@ const config = {
   }
 };
 
-const VELOCITY = 400
+const BIRD_VELOCITY = 400
 const FLAP_VELOCITY = 250
+const PIPE_VELOCITY = -200
 const INITIAL_BIRD_X = config.width * 0.1
 const INITIAL_BIRD_Y = config.height / 2
-const PIPE_Y_DELTA = {
-  MIN: 100,
+const PIPES_TO_RENDER = 400
+const INITIAL_PIPE_X = 4
+const PIPE_X_DELTA = {
+  MIN: 200,
   MAX: 250
+}
+const PIPE_Y_DELTA = {
+  MIN: 500,
+  MAX: 510
 }
 const PIPE_Y_POSITION = {
   MIN: 20,
@@ -40,19 +47,27 @@ let bird = null
 let sky = null
 let upperPipe = null
 let lowerPipe = null
-const pipeVerticalDistance = Phaser.Math.Between(PIPE_Y_DELTA.MIN, PIPE_Y_DELTA.MAX)
-const pipeVerticalPosition = Phaser.Math.Between(PIPE_Y_POSITION.MIN, PIPE_Y_POSITION.MAX - pipeVerticalDistance)
+let currentPipeHorizontalDistance = INITIAL_PIPE_X
 
 function create () {
   sky = this.add.image(0, 0, 'sky').setOrigin(0, 0);
   sky.displayWidth = config.width;
   sky.displayHeight = config.height;
   
+  
   bird = this.physics.add.sprite(INITIAL_BIRD_X, INITIAL_BIRD_Y, 'bird').setOrigin(0, 0);
-  bird.body.gravity.y = VELOCITY;
+  bird.body.gravity.y = BIRD_VELOCITY;
 
-  upperPipe = this.physics.add.sprite(500, pipeVerticalPosition, 'pipe').setOrigin(0, 1);
-  lowerPipe = this.physics.add.sprite(500, upperPipe.y + pipeVerticalDistance, 'pipe').setOrigin(0, 0);
+  for (let i = 0; i < PIPES_TO_RENDER; i++) {
+    currentPipeHorizontalDistance += Phaser.Math.Between(PIPE_X_DELTA.MIN, PIPE_X_DELTA.MAX)
+    const pipeVerticalDistance = Phaser.Math.Between(PIPE_Y_DELTA.MIN, PIPE_Y_DELTA.MAX)
+    const pipeVerticalPosition = Phaser.Math.Between(PIPE_Y_POSITION.MIN, PIPE_Y_POSITION.MAX - pipeVerticalDistance)
+    upperPipe = this.physics.add.sprite(currentPipeHorizontalDistance, pipeVerticalPosition, 'pipe').setOrigin(0, 1);
+    lowerPipe = this.physics.add.sprite(upperPipe.x, upperPipe.y + pipeVerticalDistance, 'pipe').setOrigin(0, 0);
+
+    upperPipe.body.velocity.x = PIPE_VELOCITY
+    lowerPipe.body.velocity.x = PIPE_VELOCITY
+  }
 
   this.input.on('pointerdown', flap)
   this.input.keyboard.on('keydown_SPACE', flap)
