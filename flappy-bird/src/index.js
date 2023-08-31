@@ -45,8 +45,6 @@ function preload () {
 
 let bird = null
 let sky = null
-let upperPipe = null
-let lowerPipe = null
 let currentPipeHorizontalDistance = INITIAL_PIPE_X
 
 function create () {
@@ -59,14 +57,9 @@ function create () {
   bird.body.gravity.y = BIRD_VELOCITY;
 
   for (let i = 0; i < PIPES_TO_RENDER; i++) {
-    currentPipeHorizontalDistance += Phaser.Math.Between(PIPE_X_DELTA.MIN, PIPE_X_DELTA.MAX)
-    const pipeVerticalDistance = Phaser.Math.Between(PIPE_Y_DELTA.MIN, PIPE_Y_DELTA.MAX)
-    const pipeVerticalPosition = Phaser.Math.Between(PIPE_Y_POSITION.MIN, PIPE_Y_POSITION.MAX - pipeVerticalDistance)
-    upperPipe = this.physics.add.sprite(currentPipeHorizontalDistance, pipeVerticalPosition, 'pipe').setOrigin(0, 1);
-    lowerPipe = this.physics.add.sprite(upperPipe.x, upperPipe.y + pipeVerticalDistance, 'pipe').setOrigin(0, 0);
-
-    upperPipe.body.velocity.x = PIPE_VELOCITY
-    lowerPipe.body.velocity.x = PIPE_VELOCITY
+    const upperPipe = this.physics.add.sprite(0, 0, 'pipe').setOrigin(0, 1);
+    const lowerPipe = this.physics.add.sprite(0, 0, 'pipe').setOrigin(0, 0);
+    placePipe(upperPipe, lowerPipe)
   }
 
   this.input.on('pointerdown', flap)
@@ -87,4 +80,19 @@ function restartBirdPosition () {
 
 function flap () {
   bird.body.velocity.y = -FLAP_VELOCITY
+}
+
+function placePipe (upperPipe, lowerPipe) { 
+  currentPipeHorizontalDistance += Phaser.Math.Between(PIPE_X_DELTA.MIN, PIPE_X_DELTA.MAX)
+  const pipeVerticalDistance = Phaser.Math.Between(PIPE_Y_DELTA.MIN, PIPE_Y_DELTA.MAX)
+  const pipeVerticalPosition = Phaser.Math.Between(PIPE_Y_POSITION.MIN, PIPE_Y_POSITION.MAX - pipeVerticalDistance)
+  
+  upperPipe.x = currentPipeHorizontalDistance
+  upperPipe.y = pipeVerticalPosition
+
+  lowerPipe.x = upperPipe.x
+  lowerPipe.y = upperPipe.y + pipeVerticalDistance
+
+  upperPipe.body.velocity.x = PIPE_VELOCITY
+  lowerPipe.body.velocity.x = PIPE_VELOCITY
 }
