@@ -45,6 +45,7 @@ function preload () {
 
 let bird = null
 let sky = null
+let pipeGroup = null
 let currentPipeHorizontalDistance = INITIAL_PIPE_X
 
 function create () {
@@ -52,15 +53,18 @@ function create () {
   sky.displayWidth = config.width;
   sky.displayHeight = config.height;
   
-  
   bird = this.physics.add.sprite(INITIAL_BIRD_X, INITIAL_BIRD_Y, 'bird').setOrigin(0, 0);
   bird.body.gravity.y = BIRD_VELOCITY;
 
+  pipeGroup = this.physics.add.group()
+
   for (let i = 0; i < PIPES_TO_RENDER; i++) {
-    const upperPipe = this.physics.add.sprite(0, 0, 'pipe').setOrigin(0, 1);
-    const lowerPipe = this.physics.add.sprite(0, 0, 'pipe').setOrigin(0, 0);
+    const upperPipe = pipeGroup.create(0, 0, 'pipe').setOrigin(0, 1);
+    const lowerPipe = pipeGroup.create(0, 0, 'pipe').setOrigin(0, 0);
     placePipe(upperPipe, lowerPipe)
   }
+
+  pipeGroup.setVelocityX(PIPE_VELOCITY)
 
   this.input.on('pointerdown', flap)
   this.input.keyboard.on('keydown_SPACE', flap)
@@ -92,7 +96,4 @@ function placePipe (upperPipe, lowerPipe) {
 
   lowerPipe.x = upperPipe.x
   lowerPipe.y = upperPipe.y + pipeVerticalDistance
-
-  upperPipe.body.velocity.x = PIPE_VELOCITY
-  lowerPipe.body.velocity.x = PIPE_VELOCITY
 }
